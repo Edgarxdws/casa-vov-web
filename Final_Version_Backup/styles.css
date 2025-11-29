@@ -1029,14 +1029,25 @@ body {
     position: relative;
 }
 
-.slide-card {
-    background: rgba(12, 19, 30, 0.92);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    padding: 2rem;
-    border: 1px solid rgba(184, 227, 245, 0.22);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    margin-bottom: 0;
+.product-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+    transform: scale(0.9);
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.product-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+    pointer-events: auto;
+    visibility: visible;
 }
 
 
@@ -1366,6 +1377,14 @@ body {
     transition: all 0.5s ease;
     pointer-events: none;
     visibility: hidden;
+}
+
+.flavor-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    visibility: visible;
+    position: relative;
 }
 
 .flavor-slide.active {
@@ -2143,6 +2162,13 @@ body {
     /* Ocultamos las notas de cata */
     .product-notes {
         display: none !important;
+    }
+
+    /* Aseguramos que la tarjeta tenga altura automática para acomodar todo */
+    .product-card {
+        height: auto !important;
+        min-height: 480px;
+        padding-bottom: 2rem !important;
     }
 
     /* Hacemos el texto más pequeño */
@@ -3906,5 +3932,52 @@ body {
     .chapter-content-horizontal .story-img {
         height: 250px;
         /* Restore height on mobile */
+    }
+}
+
+/* Modal Glow Styles */
+.modal-image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.modal-bottle-img {
+    position: relative;
+    z-index: 2;
+    max-height: 400px;
+    width: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+.modal-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow-color, rgba(212, 165, 116, 0.4)) 0%, transparent 70%);
+    filter: blur(40px);
+    z-index: 0;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .modal-bottle-img {
+        max-height: 250px;
+        /* Reduce height on mobile */
+        max-width: 100%;
+        /* Ensure it doesn't overflow width */
+    }
+
+    .modal-glow {
+        width: 200px;
+        /* Adjust glow size for mobile */
+        height: 200px;
     }
 }
