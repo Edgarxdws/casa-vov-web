@@ -283,7 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
             process: 'Cocción en horno cónico de piedra, fermentación natural en tinas de madera, destilación en alambique de cobre.',
             pairing: 'Perfecto para degustar solo, acompañado de sales tradicionales o frutas de temporada.',
             awards: 'Reconocido por su pureza y sabor auténtico',
-            image: 'assets/bottles/main/bottle_natural.png'
+            image: 'assets/bottles/main/bottle_natural.png',
+            color: '#A4C639' // Verde Agave
         },
         joven: {
             title: 'Mezcal Joven',
@@ -292,7 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
             process: 'Cocción en horno cónico de piedra, fermentación natural en tinas de madera, doble destilación en alambique de cobre.',
             pairing: 'Ideal con cítricos, sal de gusano, o como base para cocteles premium.',
             awards: 'Medalla de Plata - Spirits Selection 2022',
-            image: 'assets/bottles/main/bottle_joven.png'
+            image: 'assets/bottles/main/bottle_joven.png',
+            color: '#40E0D0' // Turquesa
         },
         premium: {
             title: 'Mezcal Premium',
@@ -301,7 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
             process: 'Selección rigurosa de agaves maduros, fermentación prolongada y destilación cuidadosa para resaltar los perfiles más finos.',
             pairing: 'Maridaje excepcional con alta cocina mexicana y postres de chocolate amargo.',
             awards: 'La joya de la corona de Casa VOV',
-            image: 'assets/bottles/main/bottle_premium.png'
+            image: 'assets/bottles/main/bottle_premium.png',
+            color: '#D4AF37' // Dorado
         },
         reposado: {
             title: 'Mezcal Reposado',
@@ -310,7 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
             process: 'Mismo proceso artesanal que el joven, más reposo en barricas seleccionadas que anteriormente contuvieron whisky.',
             pairing: 'Excelente con chocolate oscuro, frutos secos, o solo con hielo.',
             awards: 'Nuestro mezcal más premiado internacionalmente',
-            image: 'assets/bottles/main/bottle_reposado.png'
+            image: 'assets/bottles/main/bottle_reposado.png',
+            color: '#CD7F32' // Bronce
         },
         anejo: {
             title: 'Mezcal Añejo',
@@ -319,7 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
             process: 'Selección especial de agaves de más de 10 años, proceso tradicional y añejamiento extendido.',
             pairing: 'Perfecto con carnes rojas, quesos maduros o como digestivo.',
             awards: 'Edición limitada para conocedores',
-            image: 'assets/bottles/main/bottle_anejo.png'
+            image: 'assets/bottles/main/bottle_anejo.png',
+            color: '#8B4513' // Café Añejo
         }
     };
 
@@ -337,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="modal-image-col">
                             <div class="modal-image-wrapper">
                                 <img src="${details.image}" alt="${details.title}" class="modal-bottle-img">
-                                <div class="modal-glow"></div>
+                                <div class="modal-glow" style="--glow-color: ${details.color}"></div>
                             </div>
                         </div>
                         <div class="modal-content-col">
