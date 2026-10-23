@@ -3005,7 +3005,8 @@ body {
         overflow: visible;
     }
 
-    .wing-background path {
+    .wing-background path,
+    .wing-background use {
         transform: scale(1.6);
         transform-origin: center;
     }
@@ -3077,7 +3078,8 @@ body {
 */
 /* Desktop: Original scale restored */
 @media (min-width: 769px) {
-    .wing-background path {
+    .wing-background path,
+    .wing-background use {
         transform: scale(2.2);
         /* restore original */
         transform-origin: center;
@@ -3980,4 +3982,98 @@ body {
         /* Adjust glow size for mobile */
         height: 200px;
     }
+}
+
+/* ============================================
+   CORRECCIONES DE AUDITORÍA (2026-10)
+   ============================================ */
+
+/* Controles que pasaron de <div>/<span> a <button> para ser accesibles con teclado */
+.nav-mobile-toggle,
+.modal-close {
+    border: 0;
+    font-family: inherit;
+    line-height: 1;
+}
+
+.nav-mobile-toggle {
+    background: none;
+    padding: 0.5rem;
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+    outline: 2px solid var(--color-oro-viejo);
+    outline-offset: 3px;
+}
+
+/* El WhatsApp flotante tapaba las leyendas legales del footer en móvil */
+@media (max-width: 768px) {
+    .main-footer {
+        padding-bottom: 9rem;
+    }
+}
+
+/* --- AVISO DE EDAD + PAÍS (reemplaza al selector de país simple) --- */
+.age-gate .popup-content p.age-gate-lead {
+    color: var(--color-negro-carbon);
+    margin-bottom: 1.5rem;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.age-gate .country-buttons {
+    border: 0;
+    padding: 0;
+    margin: 0 0 1.5rem;
+}
+
+.age-gate .country-btn input {
+    accent-color: var(--color-oro-viejo);
+}
+
+.age-gate .country-btn:has(input:checked) {
+    border-color: var(--color-oro-viejo);
+    box-shadow: 0 0 0 2px var(--color-oro-viejo);
+}
+
+.age-gate-dob {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--color-negro-carbon);
+    margin-bottom: 1.5rem;
+}
+
+.age-gate-dob input {
+    font: inherit;
+    padding: 0.7rem 1rem;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.age-gate .age-gate-error {
+    color: #a1281f;
+    margin-bottom: 1rem;
+}
+
+.age-gate-legal {
+    margin-top: 1.5rem;
+    margin-bottom: 0 !important;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.age-gate-denied[hidden],
+.age-gate-ask[hidden],
+.age-gate-error[hidden] {
+    display: none;
 }

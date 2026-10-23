@@ -1,0 +1,40 @@
+<!-- @dsCard group="Colors" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colores · Casa VOV</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--space-l); background: var(--vov-papel); color: var(--vov-carbon); font: var(--step-0)/1.5 var(--font-text); }
+  h2 { font: 600 var(--step-2)/1.1 var(--font-display); margin: 0 0 var(--space-m); }
+  h2:not(:first-child) { margin-top: var(--space-xl); }
+  .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-s); }
+  .sw { border-radius: var(--radius); overflow: hidden; border: 1px solid #0001; background: #fff; }
+  .sw i { display: block; height: 72px; }
+  .sw p { margin: 0; padding: var(--space-xs) var(--space-s); font: var(--step--1)/1.4 var(--font-data); }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; }
+  .pair i:last-child { display: grid; place-items: center; color: var(--vov-papel); font: 600 var(--step--1) var(--font-text); }
+</style>
+</head>
+<body>
+  <h2>Tierra</h2>
+  <div class="row">
+    <div class="sw"><i style="background:var(--vov-carbon)"></i><p>carbon #1B1714<br>fondo oscuro</p></div>
+    <div class="sw"><i style="background:var(--vov-piedra)"></i><p>piedra #3A3532<br>texto 10.5:1</p></div>
+    <div class="sw"><i style="background:var(--vov-ceniza)"></i><p>ceniza #6E655D<br>metadatos 4.9:1</p></div>
+    <div class="sw"><i style="background:var(--vov-papel)"></i><p>papel #F4EEE4<br>fondo claro</p></div>
+    <div class="sw"><i style="background:var(--vov-cantera)"></i><p>cantera #D8B9A6<br>solo superficies</p></div>
+    <div class="sw"><i style="background:var(--vov-barro)"></i><p>barro #8C4A2F<br>enlaces 5.8:1</p></div>
+    <div class="sw"><i style="background:var(--vov-oro)"></i><p>oro #D4A574<br>solo sobre carbón</p></div>
+  </div>
+  <h2>Expresiones · campo / tinta (texto ≥ 4.5:1 sobre papel)</h2>
+  <div class="row">
+    <div class="sw"><span class="pair"><i style="background:var(--vov-natural)"></i><i style="background:var(--vov-natural-tinta)">Aa</i></span><p>Natural</p></div>
+    <div class="sw"><span class="pair"><i style="background:var(--vov-joven)"></i><i style="background:var(--vov-joven-tinta)">Aa</i></span><p>Joven</p></div>
+    <div class="sw"><span class="pair"><i style="background:var(--vov-premium)"></i><i style="background:var(--vov-premium-tinta)">Aa</i></span><p>Premium</p></div>
+    <div class="sw"><span class="pair"><i style="background:var(--vov-reposado)"></i><i style="background:var(--vov-reposado-tinta)">Aa</i></span><p>Reposado</p></div>
+    <div class="sw"><span class="pair"><i style="background:var(--vov-anejo)"></i><i style="background:var(--vov-anejo-tinta)">Aa</i></span><p>Añejo</p></div>
+  </div>
+</body>
+</html>

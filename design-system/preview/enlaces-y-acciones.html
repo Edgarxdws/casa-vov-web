@@ -1,0 +1,43 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enlaces y acciones · Casa VOV</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  body { margin: 0; padding: var(--space-l); font: var(--step-0)/1.5 var(--font-text); display: grid; gap: var(--space-l); grid-template-columns: 1fr 1fr; }
+  section { padding: var(--space-l); border-radius: var(--radius); }
+  .claro { background: var(--vov-papel); color: var(--vov-carbon); }
+  .oscuro { background: var(--vov-carbon); color: var(--vov-papel); }
+  .meta { font: var(--step--1)/1.4 var(--font-data); opacity: .75; margin: 0 0 var(--space-s); }
+  /* Acción principal: un enlace con intención, no una píldora */
+  .accion { display: inline-flex; gap: var(--space-xs); align-items: baseline; font-weight: 600; text-decoration: none;
+            color: var(--vov-barro); border-bottom: 2px solid currentColor; padding-bottom: 2px;
+            transition: gap var(--dur-corta) var(--ease-humo); }
+  .accion:hover { gap: var(--space-s); }
+  .accion:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  .oscuro .accion { color: var(--vov-oro); }
+  /* Botón de formulario: rectangular, radio 2px */
+  .boton { font: 600 var(--step--1)/1 var(--font-text); letter-spacing: .06em; text-transform: uppercase;
+           background: var(--vov-carbon); color: var(--vov-papel); border: 0; border-radius: var(--radius);
+           padding: var(--space-s) var(--space-l); cursor: pointer; transition: background var(--dur-micro); }
+  .boton:hover { background: var(--vov-barro); }
+  .oscuro .boton { background: var(--vov-oro); color: var(--vov-carbon); }
+</style>
+</head>
+<body>
+  <section class="claro">
+    <p class="meta">Sobre papel</p>
+    <p><a class="accion" href="#">Ver cómo se hace el Joven <span aria-hidden="true">→</span></a></p>
+    <p><a class="accion" href="#">Encontrar una botella en Houston <span aria-hidden="true">→</span></a></p>
+    <button class="boton" type="button">Enviar mensaje</button>
+  </section>
+  <section class="oscuro">
+    <p class="meta">Sobre carbón</p>
+    <p><a class="accion" href="#">Conocer al maestro <span aria-hidden="true">→</span></a></p>
+    <p><a class="accion" href="#">Recetas con Mezcaladas <span aria-hidden="true">→</span></a></p>
+    <button class="boton" type="button">Entrar</button>
+  </section>
+</body>
+</html>

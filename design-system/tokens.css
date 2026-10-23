@@ -1,0 +1,76 @@
+/* ============================================
+   CASA VOV · TOKENS DE DISEÑO (v0.1, 2026-10)
+   Fuente: docs/05-storytelling-y-diseno-2026.md §7
+   Contrastes medidos contra --vov-papel (#F4EEE4) y --vov-carbon (#1B1714).
+   ============================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+    /* --- Tierra --- */
+    --vov-carbon: #1B1714;   /* fondo oscuro (horno) · 15.4:1 sobre papel */
+    --vov-piedra: #3A3532;   /* texto secundario sobre papel · 10.5:1 */
+    --vov-ceniza: #6E655D;   /* metadatos sobre papel · 4.9:1 */
+    --vov-papel: #F4EEE4;    /* fondo claro (bagazo) */
+    --vov-cantera: #D8B9A6;  /* superficies; nunca texto sobre papel */
+    --vov-barro: #8C4A2F;    /* enlaces sobre papel · 5.8:1 */
+    --vov-oro: #D4A574;      /* SOLO sobre carbón (8:1); sobre papel/blanco da 2.2:1 */
+
+    /* --- Expresiones: campo de color / tinta para texto sobre papel (≥ 4.5:1) --- */
+    --vov-natural: #7ED5C5;
+    --vov-natural-tinta: #27796A;
+    --vov-joven: #6CAFDC;
+    --vov-joven-tinta: #2772A4;
+    --vov-premium: #A3B9C8;
+    --vov-premium-tinta: #506F85;
+    --vov-reposado: #CBAA64;
+    --vov-reposado-tinta: #83672C;
+    --vov-anejo: #996B33;
+    --vov-anejo-tinta: #8F6430;
+
+    /* --- Tipografía: opción B (libre, OFL). Con presupuesto: Canela + Graphik (opción A) --- */
+    --font-display: "Fraunces", Georgia, serif;
+    --font-text: "Instrument Sans", system-ui, sans-serif;
+    --font-data: "IBM Plex Mono", ui-monospace, monospace;
+
+    /* Escala fluida (~1.25 en móvil, ~1.33 en escritorio) */
+    --step--1: clamp(0.83rem, 0.80rem + 0.15vw, 0.94rem);
+    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+    --step-1: clamp(1.25rem, 1.17rem + 0.4vw, 1.5rem);
+    --step-2: clamp(1.56rem, 1.4rem + 0.8vw, 2rem);
+    --step-3: clamp(1.95rem, 1.65rem + 1.5vw, 2.67rem);
+    --step-4: clamp(2.44rem, 1.9rem + 2.7vw, 3.55rem);
+    --step-5: clamp(3.05rem, 2.1rem + 4.8vw, 6rem);
+    --measure: 66ch;
+
+    /* --- Espacio (~1.6×) --- */
+    --space-2xs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-s: 1rem;
+    --space-m: 1.5rem;
+    --space-l: 2.5rem;
+    --space-xl: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+    --space-2xl: clamp(4rem, 3rem + 5vw, 6.5rem);
+    --space-3xl: clamp(6rem, 4rem + 9vw, 10.5rem);
+
+    /* --- Forma y textura --- */
+    --radius: 2px;           /* sin píldoras */
+    --grain-opacity: 0.04;   /* foto real de cantera o bagazo, no ruido generado */
+
+    /* --- Movimiento --- */
+    --dur-micro: 120ms;      /* hover y foco */
+    --dur-corta: 240ms;      /* interfaz */
+    --dur-media: 480ms;      /* titulares */
+    --dur-capitulo: 900ms;   /* transición a producto */
+    --ease-humo: cubic-bezier(.22, 1, .36, 1);    /* entradas */
+    --ease-tierra: cubic-bezier(.65, 0, .35, 1);  /* movimientos simétricos */
+    --ease-vuelo: cubic-bezier(.16, 1, .3, 1);    /* View Transitions y el ala */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur-corta: 0.01ms;
+        --dur-media: 0.01ms;
+        --dur-capitulo: 0.01ms;
+    }
+}

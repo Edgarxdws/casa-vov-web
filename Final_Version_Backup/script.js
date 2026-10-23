@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function toggleMenu() {
             navMenu.classList.toggle('nav-menu-active');
             mobileToggle.classList.toggle('toggle-active');
+            mobileToggle.setAttribute('aria-expanded', navMenu.classList.contains('nav-menu-active'));
 
             // Bloquear scroll cuando el menú está abierto
             if (navMenu.classList.contains('nav-menu-active')) {
@@ -165,50 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             // El ala ya no sigue el scroll - se mantiene en el centro con solo animación flotante
-        });
-
-        // --- ANIMACIÓN DE BOTELLAS 3D ---
-        const productBottles = document.querySelectorAll('.product-bottle');
-
-        productBottles.forEach((bottle) => {
-            bottle.addEventListener('mouseenter', () => {
-                gsap.to(bottle, {
-                    rotationY: 360,
-                    duration: 1.5,
-                    ease: 'power2.inOut'
-                });
-            });
-
-            bottle.addEventListener('mouseleave', () => {
-                gsap.to(bottle, {
-                    rotationY: 0,
-                    duration: 1,
-                    ease: 'power2.inOut'
-                });
-            });
-        });
-
-        // --- TIMELINE DE PREMIOS ANIMADO ---
-        const awardItems = document.querySelectorAll('.award-item');
-
-        awardItems.forEach((item, index) => {
-            gsap.fromTo(item,
-                {
-                    opacity: 0,
-                    x: index % 2 === 0 ? -100 : 100
-                },
-                {
-                    opacity: 1,
-                    x: 0,
-                    duration: 1,
-                    scrollTrigger: {
-                        trigger: item,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none none'
-                    }
-                }
-            );
         });
     }
 
@@ -388,6 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const openModals = [...document.querySelectorAll('.modal')].filter(m => m.style.display === 'block');
+        if (!openModals.length) return;
+        openModals.forEach(m => { m.style.display = 'none'; });
+        document.body.style.overflow = 'auto';
+    });
+
     // --- SECCIÓN DE RECETAS ---
     const recipesModal = document.getElementById('recipesModal');
     const recipesClose = document.querySelector('.recipes-close');
@@ -499,26 +464,13 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Animación del botón
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-
-            submitBtn.innerHTML = '<span>Enviando...</span> <svg class="btn-wing" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>';
-            submitBtn.disabled = true;
-
-            // Simulación de envío (aquí conectarías con tu backend)
-            setTimeout(() => {
-                submitBtn.innerHTML = '<span>¡Mensaje enviado!</span> <svg class="btn-wing" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-                submitBtn.style.background = '#4CAF50';
-
-                // Reset del formulario
-                setTimeout(() => {
-                    contactForm.reset();
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '';
-                }, 2000);
-            }, 1500);
+            // Aún no hay backend: se abre el correo del visitante con el mensaje ya escrito
+            // en lugar de fingir un envío. Al contratar Formspree/Netlify Forms, cambiar por fetch().
+            const field = (name) => contactForm.elements[name];
+            const reason = field('motivo').selectedOptions[0].textContent.trim();
+            const subject = `Contacto web: ${reason} - ${field('nombre').value.trim()}`;
+            const body = `${field('mensaje').value.trim()}\n\n${field('nombre').value.trim()}\n${field('email').value.trim()}`;
+            window.location.href = `mailto:info@casavov.mx?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         });
     }
 
@@ -958,6 +910,7 @@ langButtons.forEach(btn => {
         // Cambiar clase activa
         langButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        document.documentElement.lang = lang;
 
         // Traducir elementos
         translatableElements.forEach(el => {
@@ -991,62 +944,53 @@ const anejoBottle = document.querySelector('[alt="Mezcal Añejo"]');
 if (anejoBottle) {
     anejoBottle.style.transform = 'rotate(0deg)';
 }
-// Mostrar popup al cargar la página
-window.addEventListener('load', () => {
-    const hasSelectedCountry = localStorage.getItem('countrySelected');
-    if (!hasSelectedCountry) {
-        document.getElementById('countrySelector').classList.add('show');
+// --- AVISO DE EDAD + PAÍS ---
+// Se guarda la confirmación de edad, no solo el país: sin ella el aviso vuelve a aparecer.
+const storage = {
+    get: (key) => { try { return localStorage.getItem(key); } catch { return null; } },
+    set: (key, value) => { try { localStorage.setItem(key, value); } catch { /* modo privado */ } },
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const gate = document.getElementById('countrySelector');
+    if (!gate) return;
+
+    if (!storage.get('ageVerified')) {
+        gate.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        gate.querySelector('input[name="country"]')?.focus();
     }
+
+    const form = gate.querySelector('.age-gate-form');
+    const legalAge = { mx: 18, us: 21 };
+
+    form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const country = form.elements.country.value;
+        const dob = new Date(form.elements.dob.value + 'T00:00:00');
+        const today = new Date();
+        const valid = country && !Number.isNaN(dob.getTime()) && dob < today;
+        gate.querySelector('.age-gate-error').hidden = valid;
+        if (!valid) return;
+
+        let age = today.getFullYear() - dob.getFullYear();
+        const beforeBirthday = today.getMonth() < dob.getMonth()
+            || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate());
+        if (beforeBirthday) age--;
+
+        if (age < legalAge[country]) {
+            gate.querySelector('.age-gate-ask').hidden = true;
+            gate.querySelector('.age-gate-denied').hidden = false;
+            return;
+        }
+        // Solo se guarda que la edad se verificó y el país, nunca la fecha de nacimiento
+        storage.set('ageVerified', country);
+        storage.set('countrySelected', country);
+        gate.classList.remove('show');
+        document.body.style.overflow = '';
+        if (country === 'us') document.querySelector('[data-lang="en"]')?.click();
+    });
 });
-
-// Función para seleccionar país (Global)
-window.selectCountry = function (country) {
-    localStorage.setItem('countrySelected', country);
-    const selector = document.getElementById('countrySelector');
-    if (selector) {
-        selector.classList.remove('show');
-    }
-
-    // Cambiar idioma si es USA
-    if (country === 'us') {
-        // Activar traducción al inglés
-        const langBtn = document.querySelector('[data-lang="en"]');
-        if (langBtn) langBtn.click();
-    }
-};
-// --- FASE 2: INICIALIZACIÓN DE CARRUSELES (MÓVIL) ---
-
-let elevacionSlider; // Declaramos la variable fuera
-const breakpoint = window.matchMedia('(max-width: 768px)'); // Definimos el punto de quiebre
-
-const initializeElevacionSlider = () => {
-    if (breakpoint.matches === true) { // Si estamos en móvil
-        if (elevacionSlider === undefined) { // Y el slider no existe, lo creamos
-            elevacionSlider = new Swiper('.product-slider-main', {
-                loop: true,
-                slidesPerView: 1,
-                spaceBetween: 20,
-                navigation: {
-                    nextEl: '.product-arrow-next',
-                    prevEl: '.product-arrow-prev',
-                },
-            });
-        }
-    } else { // Si estamos en escritorio
-        if (elevacionSlider !== undefined) { // Y el slider SÍ existe, lo destruimos
-            elevacionSlider.destroy(true, true);
-            elevacionSlider = undefined; // Lo reiniciamos
-        }
-    }
-};
-
-// Ejecutamos la función al cargar la página
-initializeElevacionSlider();
-
-// Y volvemos a ejecutarla CADA VEZ que el tamaño de la ventana cambie
-window.addEventListener('resize', initializeElevacionSlider);
-
-
 
 // ========== CAROUSEL DE PRODUCTOS ==========
 document.addEventListener('DOMContentLoaded', function () {
@@ -1084,19 +1028,27 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Event listeners
-    nextBtn?.addEventListener('click', nextSlide);
-    prevBtn?.addEventListener('click', prevSlide);
+    nextBtn?.addEventListener('click', () => { nextSlide(); restartAutoplay(); });
+    prevBtn?.addEventListener('click', () => { prevSlide(); restartAutoplay(); });
 
     // Indicadores
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
             currentSlide = index;
             showSlide(currentSlide);
+            restartAutoplay();
         });
     });
 
-    // Auto-play (opcional)
-    setInterval(nextSlide, 8000);
+    // Auto-play: se reinicia al navegar a mano y se pausa con la pestaña oculta o con movimiento reducido
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let autoplay;
+    function restartAutoplay() {
+        clearInterval(autoplay);
+        if (!reduceMotion && !document.hidden) autoplay = setInterval(nextSlide, 8000);
+    }
+    document.addEventListener('visibilitychange', restartAutoplay);
+    restartAutoplay();
 
     // Swipe para móvil
     let startX = 0;
@@ -1110,8 +1062,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     carousel?.addEventListener('touchend', (e) => {
         endX = e.changedTouches[0].clientX;
-        if (startX - endX > 50) nextSlide();
-        if (endX - startX > 50) prevSlide();
+        if (startX - endX > 50) { nextSlide(); restartAutoplay(); }
+        if (endX - startX > 50) { prevSlide(); restartAutoplay(); }
     });
 });
 
@@ -1245,108 +1197,6 @@ function initAwardsAnimation() {
     timelineObserver.observe(awardsTimeline);
 }
 
-// Alternative: Scroll-based progressive reveal (more advanced)
-function initProgressiveAwardsReveal() {
-    const awardsSection = document.querySelector('.awards-section');
-    const awardsTimeline = document.querySelector('.awards-timeline');
-    const awardItems = document.querySelectorAll('.award-item');
-
-    if (!awardsSection || awardItems.length === 0) return;
-
-    let hasAnimated = false;
-
-    // Check on scroll
-    const checkAwardsScroll = () => {
-        if (hasAnimated) return; // Only animate once
-
-        const sectionTop = awardsSection.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-
-        // When section is 30% into viewport
-        if (sectionTop < windowHeight * 0.7) {
-            // Animate timeline
-            if (awardsTimeline) {
-                awardsTimeline.classList.add('timeline-animated');
-            }
-
-            // Animate awards sequentially
-            awardItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.classList.add('award-visible');
-                }, index * 200); // 200ms delay between each award
-            });
-
-            hasAnimated = true;
-            // Remove listener after animation
-            window.removeEventListener('scroll', checkAwardsScroll);
-        }
-    };
-
-    // Initial check
-    checkAwardsScroll();
-
-    // Check on scroll
-    window.addEventListener('scroll', checkAwardsScroll, { passive: true });
-}
-
-// GSAP version (if you want smoother animations with GSAP)
-function initAwardsGSAP() {
-    if (typeof gsap === 'undefined') {
-        console.warn('GSAP not loaded. Using standard animations.');
-        return;
-    }
-
-    const awardItems = document.querySelectorAll('.award-item');
-
-    // ScrollTrigger for each award
-    awardItems.forEach((item, index) => {
-        gsap.from(item, {
-            scrollTrigger: {
-                trigger: item,
-                start: 'top 85%',
-                end: 'top 20%',
-                toggleActions: 'play none none none',
-                // markers: true, // Uncomment for debugging
-            },
-            y: 50,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power3.out',
-            delay: index * 0.15
-        });
-
-        // Animate year badge
-        const yearBadge = item.querySelector('.award-year');
-        if (yearBadge) {
-            gsap.from(yearBadge, {
-                scrollTrigger: {
-                    trigger: item,
-                    start: 'top 85%',
-                },
-                scale: 0,
-                rotation: 180,
-                duration: 0.6,
-                ease: 'back.out(1.7)',
-                delay: (index * 0.15) + 0.2
-            });
-        }
-    });
-
-    // Animate timeline
-    const timeline = document.querySelector('.awards-timeline');
-    if (timeline) {
-        gsap.from(timeline, {
-            scrollTrigger: {
-                trigger: timeline,
-                start: 'top 80%',
-                end: 'bottom 20%',
-                scrub: 1,
-            },
-            '--timeline-height': '0%'
-        });
-    }
-}
-
 // Mobile-specific enhancements
 function initMobileAwardsOptimization() {
     const isMobile = window.innerWidth <= 768;
@@ -1377,20 +1227,7 @@ function initMobileAwardsOptimization() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Choose ONE of these methods:
-
-    // METHOD 1: Simple Intersection Observer (Recommended - works best)
     initAwardsAnimation();
-
-    // METHOD 2: Progressive reveal with scroll
-    // initProgressiveAwardsReveal();
-
-    // METHOD 3: GSAP version (if GSAP is loaded and you want more control)
-    // Make sure to load GSAP ScrollTrigger plugin first:
-    // <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    // initAwardsGSAP();
-
-    // Mobile optimizations (works with any method above)
     initMobileAwardsOptimization();
 });
 
@@ -1410,14 +1247,4 @@ window.addEventListener('resize', () => {
             }
         });
     }, 250);
-});
-
-// Inicialización del Popup de País
-document.addEventListener('DOMContentLoaded', () => {
-    const countrySelector = document.getElementById('countrySelector');
-    if (countrySelector && !localStorage.getItem('countrySelected')) {
-        setTimeout(() => {
-            countrySelector.classList.add('show');
-        }, 500);
-    }
 });
